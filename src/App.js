@@ -2,35 +2,41 @@ import React, { useState, useEffect } from "react";
 import './App.css';
 import { HookCategoryForm }from './hooks/categoryForm.jsx';
 import { HookTodoListForm } from './hooks/todoListForm.jsx';
+import TodoListFormat from './hooks/todoFormat.jsx';
 function App() {
-  const [title, setTitle] = useState(null);
+  const [title, setTitle] = useState();
+  // const [todo, setTodo] = useState();
+  const [list, setList] = useState([]);
+  let [isDone, setIsDone] = useState(false)
   const createList = text => {
-    // console.log(title, "title");
+    console.log("hiting here?")
     setTitle(text);
-    // console.log(title, "set title");
-    
-    // const newTodos = {
-    //   text,
-    //   isCompleted: false
-    // }
+  
   
   };
   const addTodo = text => {
-    console.log(text);
+    console.log(text)
+    list.push(text);
+    console.log(list, title)
   }
-  console.log(title)
+  
+ const finish = () => {
+  setIsDone(true)
+ }
   return (
     <div className="App">
       <header className="App-header">
-      <h1>{title}</h1>
-           {
-             !title ? ( < HookCategoryForm createList = {
-                 createList
-               }
-               />) : ( <HookTodoListForm addTodo = {addTodo}/> )
-             }
-     
       
+           {
+             isDone ? (<TodoListFormat list={list} title={title}/> ) : ( < HookTodoListForm addTodo = {
+               addTodo
+               }
+              createList = {
+                 createList
+              } finish={
+                finish
+              }/> )
+             }
   
       </header>
     </div>

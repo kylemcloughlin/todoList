@@ -1,46 +1,86 @@
 import React, { useState, useEffect } from "react";
-import PickyDateTime from 'react-picky-date-time';
-export function HookTodoListForm({ addTodo }) {
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { optionalCallExpression } from "@babel/types";
+// import { ServerHttp2Stream } from "http2";
 
-  const [todoValue, setTodoValue] = useState("");
-  const [disValue, setDisValue] = useState("");
-  const [time, setTime ] = useState({
-    showPickyDateTime: true,
-    date: '30',
-    month: '01',
-    year: '2000',
-    hour: '03',
-    minute: '10',
-    second: '40',
-    meridiem: 'PM'
-  })
+
+
+export function HookTodoListForm({ addTodo, createList, finish }) {
+  const urgency = ["very important", "important", "not important"];
+  const [title, setTitle] = useState("");
+  const [todo, setTodo] = useState("");
+  const [dis, setDis] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [todoUrgency, setTodoUrgency] = useState("");
+  const [hardTitle, setHardTitle] = useState(false)
+  
   const handleSubmit = e => {
-  //   e.preventDefault();
-    console.log(todoValue)
-  //   if (!value) return;
-  //  addTodo(value);
-  //   // setValue("");
+    if (hardTitle == false ) {
+     createList(title)
+      setHardTitle(true);
+    }
+    e.preventDefault();
+    let output = {
+      todo: todo,
+      discription: dis,
+      date: date,
+      importance: todoUrgency,
+      status: "incomplete"
+    }
+
+    addTodo(output)
+    setTodo("")
+    setDis("")
+    setTodoUrgency("")
   };
 
+  const handleDate = res => {
+    setDate(res)
+    console.log(date);
+  }
+  const handleFinish = e => {
+    e.preventDefault();
+    console.log("hit");
+   finish()
+  }
   return (
     <div>
-
-    <form
-      id="todoListForm" >
-      < input type="text"className="input" value={todoValue} onChange={e => setTodoValue(e.target.value)}
-      /> what do you have to do?
-      </form>
       <form
         id="todoListForm" >
-        < input type="text" className="input" value={disValue} onChange={e => setDisValue(e.target.value)}
-        /> discription:
-      </form>
-      <PickyDateTime
-        size="m"// 'xs', 's', 'm', 'l'
-        mode={1} //0: calendar only, 1: calendar and clock, 2: clock only; default is 0
-        locale={`en-us`}// 'en-us' or 'zh-cn'; default is en-us
-        show={time.showPickyDateTime}
+          { !hardTitle ? (
+            <input className="input is-rounded" type="text" placeholder="Choose A Title!"
+            value={title
+            }
+            onChange={
+              e => setTitle(e.target.value)
+            } />
+    
+          ) : (<h1>{title}</h1>) }
+        < input type="text" className="input is-rounded" value={todo} onChange={e => setTodo(e.target.value)}
         />
-      </div>
+        < textarea type="text" className="textarea is-rounded" value={dis} onChange={e => setDis(e.target.value)}
+        />
+        <div className="select is-rounded">
+          <select value={todoUrgency} onChange={e => setTodoUrgency(e.target.value)}>
+            <option>Rounded dropdown</option>
+            {urgency.map(opt => {
+              return (<option value={opt}>{opt}</option>)
+            })}
+          </select>
+        </div>
+        <DatePicker
+          selected={date}
+          onChange={handleDate}
+        />
+        <button className="button is-info" onClick={handleSubmit}>Add To List</button>
+        <div className="control">
+          <button className="button is-warning"
+            onClick={handleFinish}>Submit</button>
+        </div>
+      </form>
+    </div>
   );
 }
+
+

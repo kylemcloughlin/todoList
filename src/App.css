@@ -380,3 +380,11 @@ height: 1.5em;
   margin-top: .5em;
   height: 1.5em;
 }
+
+.todo-title{
+  color: orange;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

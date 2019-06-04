@@ -11,8 +11,10 @@ export default function Header(title) {
   return (
     <header className="head">
       <img src={list} alt="list" id="photo" href="/"/>
-      <h1><strong id="name">Smart List</strong></h1>
-     <h1>{hardTitle}</h1>
+      <h1><strong id="name">Smart List</strong>
+      </h1>
+      
+     <strong className="todo-title">{hardTitle}</strong> 
    
     </header>
   )

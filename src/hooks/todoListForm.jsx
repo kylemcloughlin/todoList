@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import $ from 'jquery';
+import { findDOMNode } from 'react-dom';
 import '../App.css';
 function handleBanners(x) {
   return new Promise((resolve) => {
-    setTimeout(resolve, 5000)
+    setTimeout(resolve, 3000)
   }).then(() => x)
 }
 function loadingTimer(input) {
@@ -15,6 +16,7 @@ function loadingTimer(input) {
   }).then(() => output);
 }
 export function HookTodoListForm({ addTodo, createList, finish }) {
+ 
   const urgency = ["very important", "important", "not important"];
   const [title, setTitle] = useState("");
   const [todo, setTodo] = useState("");
@@ -26,11 +28,27 @@ export function HookTodoListForm({ addTodo, createList, finish }) {
   const [hasError, setHasError] = useState(false)
   const [hasSaved, SetHasSaved] = useState(false)
   const [displayTodo, setDisplayTodo] = useState("")
+  const [hasTitleError, setHasTitleError] = useState(false);
   const create = e => {
     e.preventDefault()
+    if (title === "") {
+      setHasTitleError(true)
+      console.log("hit")    
+      handleBanners(false).then(() => {
+        titleEToggle();
+     })
 
-    createList(title)
-     setHardTitle(true);
+      // console.log("hit", title)
+      // setHardTitle(false)
+      // setHasError(true)
+      // handleBanners(false).then(() => {
+      //   setHasTitleError(false)
+      // })
+    } else {
+
+      createList(title)
+      setHardTitle(true);
+    }
   }
   const handleSubmit = e => {
     // if (hardTitle === false ) {
@@ -80,13 +98,31 @@ export function HookTodoListForm({ addTodo, createList, finish }) {
     }
    finish()
   }
+
+  const titleEToggle = () => {
+    console.log("hit")
+    const el = document.getElementById("titleError")
+    $(el).slideToggle();
+    
+  }
+  useEffect(() =>{
+    titleEToggle();
+  },[])
+  
   return (
     <div id="todoForm">
-    { hasError ? (<div class="message-banner">
+      {hasTitleError ? (
+        <div id="titleError" class="message-banner">
+          <h1>Whoops!</h1>
+          <h2>Make Sure You Choose A Title Before Creating Your List</h2>
+        </div>
+      ) : (null)} 
+   {hasError ? (
+     <div id="error" class="message-banner">
       <h1>Whoops!</h1>
       <h2>Make Sure You Pick A Task Before Adding To the List!</h2>
-    </div>) : 
-      (null)}
+    </div>
+   ):(null)} 
       {hasSaved ? (<div class="message-banner" id="saved-banner">
         <h2>{displayTodo} Added To list!</h2>
       </div>) :
@@ -97,10 +133,7 @@ export function HookTodoListForm({ addTodo, createList, finish }) {
            <div>
                 <h1>Start your List!</h1>
             <input  type="text" id="title" placeholder="Choose A Title For The List!"
-            value={title
-            }
-            onChange={
-              e => setTitle(e.target.value)
+            value={title}onChange={e => setTitle(e.target.value)
             }  /> <button onClick={create} id="title-button">Create</button>
             </div>
     
